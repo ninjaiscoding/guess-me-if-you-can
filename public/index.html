@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>That Ain't Me - Multiplayer Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-animation">
+        <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
+    </div>
+    
+    <div class="container">
+        <!-- LOGO -->
+        <header>
+            <h1 class="logo">That <span>Ain't</span> Me</h1>
+        </header>
+
+        <!-- SCREEN 1: LOGIN -->
+        <section id="login-screen" class="screen active">
+            <div class="glass-card">
+                <h2>Join a Game</h2>
+                <div class="input-group">
+                    <label for="player-name">Your Name</label>
+                    <input type="text" id="player-name" placeholder="Enter your nickname" autocomplete="off" maxlength="15">
+                </div>
+                <div class="input-group">
+                    <label for="room-id">Room ID</label>
+                    <input type="text" id="room-id" placeholder="Enter room code" autocomplete="off" maxlength="10">
+                </div>
+                <div class="input-group host-only-group" style="display:none;">
+                    <label for="category-select">Category</label>
+                    <select id="category-select">
+                        <option value="Anime Characters">Anime Characters</option>
+                        <option value="Animals">Animals</option>
+                        <option value="Real Famous People">Real Famous People</option>
+                        <option value="Video Game Characters">Video Game Characters</option>
+                        <option value="Sports Persons">Sports Persons</option>
+                        <option value="Superheroes">Superheroes</option>
+                        <option value="Cartoon Characters">Cartoon Characters</option>
+                        <option value="Movie Characters">Movie Characters</option>
+                        <option value="Mythological Creatures">Mythological Creatures</option>
+                        <option value="Historical Figures">Historical Figures</option>
+                        <option value="Musicians & Singers">Musicians & Singers</option>
+                        <option value="Disney Princesses">Disney Princesses</option>
+                        <option value="Villains">Villains</option>
+                        <option value="Sci-Fi Characters">Sci-Fi Characters</option>
+                        <option value="Fantasy Characters">Fantasy Characters</option>
+                        <option value="Comedians">Comedians</option>
+                        <option value="Internet Personalities">Internet Personalities</option>
+                        <option value="Wrestlers">Wrestlers</option>
+                        <option value="Famous Dogs">Famous Dogs</option>
+                        <option value="Board Game/Toy Characters">Board Game/Toy Characters</option>
+                    </select>
+                </div>
+                <button id="join-btn" class="primary-btn">Join / Create</button>
+                <div id="login-error" class="error-msg"></div>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: LOBBY -->
+        <section id="lobby-screen" class="screen">
+            <div class="glass-card">
+                <div class="room-info">
+                    <h2>Room: <span id="display-room-id" class="highlight"></span></h2>
+                    <p>Category: <span id="display-category" class="highlight-text"></span></p>
+                </div>
+                
+                <div class="players-list-container">
+                    <h3>Players in Room</h3>
+                    <ul id="lobby-players-list">
+                        <!-- Players injected here -->
+                    </ul>
+                </div>
+                
+                <div id="host-controls" class="hidden">
+                    <div class="input-group">
+                        <label for="lobby-category-select">Change Category:</label>
+                        <select id="lobby-category-select">
+                            <!-- Options injected by JS -->
+                        </select>
+                    </div>
+                    <button id="start-game-btn" class="primary-btn pulse">Start Game</button>
+                </div>
+                <p id="waiting-msg">Waiting for host to start the game...</p>
+            </div>
+        </section>
+
+        <!-- SCREEN 3: GAME BOARD -->
+        <section id="game-screen" class="screen">
+            <div class="game-header glass-card">
+                <div class="game-info">
+                    <h3>Room: <span id="game-room-id"></span> | Category: <span id="game-category"></span></h3>
+                </div>
+                <div id="turn-indicator" class="turn-indicator">
+                    <!-- Turn info injected here -->
+                </div>
+            </div>
+            
+            <div class="game-grid">
+                <!-- Players Cards -->
+                <div class="players-grid" id="players-grid">
+                    <!-- Player cards injected here -->
+                </div>
+                
+                <!-- Interaction Panel -->
+                <div class="interaction-panel glass-card">
+                    
+                    <div id="active-turn-panel" class="hidden">
+                        <h3>It's Your Turn!</h3>
+                        <p class="subtitle">Ask your questions on Discord. You can take notes below.</p>
+                        <textarea id="notepad" placeholder="My Notes: 
+- Question 1: Am I an animal? (Yes)
+- Question 2: Am I blue? (No)"></textarea>
+                        
+                        <div class="guess-section">
+                            <h4>Make a Guess</h4>
+                            <p>Guesses Left: <span id="guesses-left" class="highlight">3</span></p>
+                            <input type="text" id="guess-input" placeholder="Who am I?">
+                            <button id="guess-btn" class="primary-btn small">Guess</button>
+                        </div>
+                        
+                        <button id="end-turn-btn" class="secondary-btn">End Turn</button>
+                    </div>
+                    
+                    <div id="waiting-turn-panel">
+                        <h3>Waiting for <span id="current-player-name" class="highlight"></span></h3>
+                        <p>They are asking questions. Answer them on Discord!</p>
+                        
+                        <div class="guess-section my-status-section">
+                            <h4>My Status</h4>
+                            <p>Guesses Left: <span id="my-guesses-left" class="highlight">3</span></p>
+                        </div>
+                    </div>
+
+                    <div id="game-over-panel" class="hidden">
+                        <h3>Game Over!</h3>
+                        <p id="game-over-msg"></p>
+                        <button id="play-again-btn" class="primary-btn hidden">Play Again</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
