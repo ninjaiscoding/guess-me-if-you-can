@@ -142,7 +142,6 @@ def stop_room_timer(room):
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
-    # Track state via specific player lookup rather than raw socket reference ID
     player_id = None
     current_room = None
     
@@ -158,7 +157,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 timer_opt = data.get("timerOption", "60")
                 custom_words = data.get("customWordsEnabled", False)
                 
-                # Make a safe identifier unique to this room slot based on their name
                 calculated_id = f"{room_id}_{name.lower()}"
                 player_id = calculated_id
                 current_room = room_id
@@ -171,16 +169,12 @@ async def websocket_endpoint(websocket: WebSocket):
                     rooms[room_id]["customWordsEnabled"] = custom_words
                 
                 room = rooms[room_id]
-                
-                # Check if this player is returning from a connection drop/refresh
                 existing_player = next((p for p in room["players"] if p["id"] == player_id), None)
                 
                 if existing_player:
-                    # Reconnect them completely
                     existing_player["websocket"] = websocket
                     existing_player["isDisconnected"] = False
                 else:
-                    # Block new entries mid-match
                     if room["phase"] != "lobby":
                         await websocket.send_json({"type": "error", "message": "Game already in progress!"})
                         player_id = None
@@ -200,6 +194,36 @@ async def websocket_endpoint(websocket: WebSocket):
                     })
                 
                 await manager.broadcast(current_room)
+
+            elif action == "kick":
+                if current_room and rooms[current_room]["hostId"] == player_id:
+                    target_id = data.get("playerId")
+                    room = rooms[current_room]
+                    
+                    target_player = next((p for p in room["players"] if p["id"] == target_id), None)
+                    if target_player:
+                        # 1. Send kicked signal to target client before closing
+                        if target_player["websocket"] and target_player["websocket"] in manager.active_connections:
+                            try:
+                                await target_player["websocket"].send_json({
+                                    "type": "kicked", 
+                                    "message": "You have been kicked from the room by the host."
+                                })
+                                await target_player["websocket"].close()
+                            except Exception as e:
+                                print(f"Error kicking player: {e}")
+                            manager.disconnect(target_player["websocket"])
+                        
+                        # 2. Filter them out of the list
+                        room["players"] = [p for p in room["players"] if p["id"] != target_id]
+                        
+                        # 3. Handle game progression updates if they were kicked during play
+                        if room["phase"] == "playing":
+                            if room["turnIndex"] >= len(room["players"]):
+                                room["turnIndex"] = 0
+                            check_game_over(current_room)
+                            
+                        await manager.broadcast(current_room)
                 
             elif action == "update_lobby_settings":
                 if current_room and rooms[current_room]["hostId"] == player_id:
@@ -243,18 +267,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     if player and word:
                         player["customWordGiven"] = word
                         
-                    # Check if everyone has submitted a word
                     if all(p["customWordGiven"] != "" for p in room["players"]):
-                        # Distribute them in a cycle loop randomly so no one gets their own word
                         words = [p["customWordGiven"] for p in room["players"]]
                         random.shuffle(words)
                         
-                        # Ensure offset cycle shift if any overlap matches perfectly
                         for i in range(len(room["players"])):
                             target_player = room["players"][i]
                             word_to_assign = words[i]
                             
-                            # Simple adjustment if assigned self word
                             if len(room["players"]) > 1 and target_player["customWordGiven"] == word_to_assign:
                                 swap_idx = (i + 1) % len(room["players"])
                                 words[i], words[swap_idx] = words[swap_idx], words[i]
@@ -346,7 +366,6 @@ async def websocket_endpoint(websocket: WebSocket):
                     
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-        # Soft disconnect handling: flag them, but DO NOT drop them from the room
         if current_room and current_room in rooms:
             room = rooms[current_room]
             player = next((p for p in room["players"] if p["id"] == player_id), None)
