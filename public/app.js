@@ -2,7 +2,6 @@ const loginScreen = document.getElementById('login-screen');
 const lobbyScreen = document.getElementById('lobby-screen');
 const gameScreen = document.getElementById('game-screen');
 
-// Initialize persistent player Session ID
 if (!localStorage.getItem('game_player_id')) {
     const uniqueId = 'player_' + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
     localStorage.setItem('game_player_id', uniqueId);
@@ -55,11 +54,19 @@ const gameOverMsg = document.getElementById('game-over-msg');
 let ws;
 let myId = playerId;
 let isHost = false;
+let cachedJoinData = null; // Remembers current identity for background auto-reconnections
 
 function connectWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/ws`;
     ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+        // Automatically handshake back into the game room if disconnected unexpectedly
+        if (cachedJoinData) {
+            ws.send(JSON.stringify({ action: 'join', ...cachedJoinData }));
+        }
+    };
 
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
@@ -74,11 +81,10 @@ function connectWebSocket() {
     };
 
     ws.onclose = () => {
-        setTimeout(connectWebSocket, 1500); // Auto reconnect loop
+        setTimeout(connectWebSocket, 1500); // Reconnect loop
     };
 }
 
-// Start websocket automatically on load to allow quick reconnection
 connectWebSocket();
 
 function showScreen(screenId) {
@@ -88,7 +94,7 @@ function showScreen(screenId) {
 
 joinBtn.addEventListener('click', () => {
     const name = playerNameInput.value.trim();
-    const roomId = document.getElementById('room-id').value.trim();
+    const roomId = document.getElementById('room-id').value.trim().toUpperCase(); // Enforce uniform uppercase syntax
     const category = categorySelect.value;
     const timerLimit = loginTimerSelect.value;
     
@@ -97,17 +103,19 @@ joinBtn.addEventListener('click', () => {
         return;
     }
     
+    // Save configurations to state cache
+    cachedJoinData = { playerId, roomId, name, category, timerLimit };
+    
     if (!ws || ws.readyState !== WebSocket.OPEN) {
         connectWebSocket();
         ws.onopen = () => {
-            ws.send(JSON.stringify({ action: 'join', playerId, roomId, name, category, timerLimit }));
+            ws.send(JSON.stringify({ action: 'join', ...cachedJoinData }));
         };
     } else {
-        ws.send(JSON.stringify({ action: 'join', playerId, roomId, name, category, timerLimit }));
+        ws.send(JSON.stringify({ action: 'join', ...cachedJoinData }));
     }
 });
 
-// Sync categories inside the select dropdowns
 const categories = ["Anime Characters", "Animals", "Real Famous People", "Video Game Characters", "Sports Persons", "Superheroes", "Cartoon Characters", "Movie Characters", "Mythological Creatures", "Historical Figures", "Musicians & Singers", "Disney Princesses", "Villains", "Sci-Fi Characters", "Fantasy Characters", "Comedians", "Internet Personalities", "Wrestlers", "Famous Dogs", "Board Game/Toy Characters", "Custom Words"];
 categories.forEach(c => {
     const opt = document.createElement('option');
@@ -160,6 +168,7 @@ hostBackToLobbyBtn.addEventListener('click', () => {
 });
 
 const handleLeaveAction = () => {
+    cachedJoinData = null; // Drop room memory context entirely upon intentional exit
     if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ action: 'leave' }));
     }
@@ -172,7 +181,6 @@ gameLeaveBtn.addEventListener('click', handleLeaveAction);
 function updateGameState(state) {
     isHost = (playerId === state.hostId);
     
-    // Toggle "Back to Lobby" top button visibility for the host on the Game screen
     if (isHost && state.phase !== 'lobby') {
         hostBackToLobbyBtn.classList.remove('hidden');
     } else {
@@ -195,7 +203,6 @@ function updateGameState(state) {
             waitingMsg.classList.remove('hidden');
         }
         
-        // Render players list in lobby
         playersList.innerHTML = '';
         state.players.forEach(p => {
             const li = document.createElement('li');
@@ -224,7 +231,6 @@ function updateGameState(state) {
             turnIndicator.innerText = "Waiting for other players to submit custom words...";
         }
         
-        // Render current submissions progress
         renderPlayerCards(state);
 
     } else if (state.phase === 'playing' || state.phase === 'game_over') {
@@ -237,7 +243,6 @@ function updateGameState(state) {
         const isMyTurn = turnPlayer.id === playerId;
         const me = state.players.find(p => p.id === playerId);
         
-        // Render timer remaining
         if (state.timerRemaining !== null && state.phase === 'playing') {
             countdownTimerSpan.parentElement.classList.remove('hidden');
             countdownTimerSpan.innerText = `${state.timerRemaining}s`;
