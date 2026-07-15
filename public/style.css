@@ -427,3 +427,42 @@ button {
     font-size: 1.2rem;
     letter-spacing: 0.5px;
 }
+
+/* Kick Buttons Styling */
+.kick-btn {
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.kick-btn:hover {
+    background: #b91c1c;
+    transform: scale(1.05);
+}
+
+.kick-card-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 5;
+    transition: background 0.2s;
+}
+
+.kick-card-btn:hover {
+    background: #ef4444;
+}
