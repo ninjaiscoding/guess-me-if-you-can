@@ -68,13 +68,26 @@ function connectWebSocket() {
             errorMsg.innerText = data.message;
             return;
         }
+        
+        // Handle Kick event
+        if (data.type === 'kicked') {
+            alert(data.message);
+            savedName = '';
+            savedRoomId = '';
+            if (ws) {
+                ws.onclose = null; // Unbind automatic reconnect
+                ws.close();
+            }
+            showScreen('login-screen');
+            return;
+        }
+        
         if (data.type === 'game_state') {
             updateGameState(data);
         }
     };
 
     ws.onclose = () => {
-        // Automatically attempt to reconnect quietly without dropping state if it drops
         console.log("WebSocket dropped. Reconnecting automatically...");
         setTimeout(() => {
             if (savedRoomId && savedName) {
@@ -91,7 +104,6 @@ function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
     
-    // Manage displaying top nav options cleanly based on where player is located
     if (screenId === 'login-screen') {
         topGlobalBar.classList.add('hidden');
     } else {
@@ -118,7 +130,7 @@ joinBtn.addEventListener('click', () => {
     }
 });
 
-// Setup Category Options inside Select dropdown options
+// Setup Category Options
 const categories = ["Anime Characters", "Animals", "Real Famous People", "Video Game Characters", "Sports Persons", "Superheroes", "Cartoon Characters", "Movie Characters", "Mythological Creatures", "Historical Figures", "Musicians & Singers", "Disney Princesses", "Villains", "Sci-Fi Characters", "Fantasy Characters", "Comedians", "Internet Personalities", "Wrestlers", "Famous Dogs", "Board Game/Toy Characters"];
 categories.forEach(c => {
     const opt = document.createElement('option');
@@ -127,7 +139,6 @@ categories.forEach(c => {
     lobbyCategorySelect.appendChild(opt);
 });
 
-// Broadcast lobby configurations back up to server instantly when host adjusts details
 function sendLobbySettingsUpdate() {
     if (isHost && ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({
@@ -189,11 +200,17 @@ globalLeaveBtn.addEventListener('click', () => {
     }
 });
 
+// Global Window helper to handle dynamic Kicking from Player Cards during a match
+window.kickPlayer = (playerId, name) => {
+    if (confirm(`Are you absolutely sure you want to kick ${name} from the game?`)) {
+        ws.send(JSON.stringify({ action: 'kick', playerId: playerId }));
+    }
+};
+
 function updateGameState(state) {
     myId = state.myId;
     isHost = (myId === state.hostId);
     
-    // Toggle Host visibility setup for top action triggers
     if (isHost && state.phase !== 'lobby') {
         hostBackLobbyBtn.classList.remove('hidden');
     } else {
@@ -207,7 +224,6 @@ function updateGameState(state) {
         displayTimerSettings.innerText = state.timerOption + "s";
         displayCustomSettings.innerText = state.customWordsEnabled ? "Enabled" : "Disabled";
         
-        // Reset Custom word layout view boxes explicitly for next sessions
         wordInputZone.classList.remove('hidden');
         wordSubmittedMsg.classList.add('hidden');
         customWordInput.value = '';
@@ -230,7 +246,22 @@ function updateGameState(state) {
             if (p.isDisconnected) {
                 playerStatusStr += ' <span class="status-badge status-loser" style="position:static; margin-left:5px;">DC</span>';
             }
-            li.innerHTML = `<span>${p.name}</span> <span>${playerStatusStr}</span>`;
+            
+            li.innerHTML = `<span>${p.name}</span> <span style="display: flex; align-items: center;">${playerStatusStr}</span>`;
+            
+            // Add Kick Button in Lobby for the Host
+            if (isHost && p.id !== myId) {
+                const kickBtn = document.createElement('button');
+                kickBtn.className = 'kick-btn';
+                kickBtn.innerText = 'Kick';
+                kickBtn.onclick = () => {
+                    if (confirm(`Kick ${p.name}?`)) {
+                        ws.send(JSON.stringify({ action: 'kick', playerId: p.id }));
+                    }
+                };
+                li.querySelector('span:last-child').appendChild(kickBtn);
+            }
+            
             playersList.appendChild(li);
         });
         
@@ -314,8 +345,15 @@ function updateGameState(state) {
             if (p.isLoser) statusBadge = `<span class="status-badge status-loser">Eliminated</span>`;
             if (p.isDisconnected && !p.isWinner && !p.isLoser) statusBadge = `<span class="status-badge status-loser" style="background:#f59e0b">DC</span>`;
             
+            // Render a Kick button overlay on player cards for the host during gameplay
+            let kickCardHtml = '';
+            if (isHost && p.id !== myId) {
+                kickCardHtml = `<button class="kick-card-btn" onclick="kickPlayer('${p.id}', '${p.name}')">Kick</button>`;
+            }
+            
             card.innerHTML = `
                 ${statusBadge}
+                ${kickCardHtml}
                 <div class="player-name">${p.name} ${p.id === myId ? '(You)' : ''}</div>
                 ${charDisplay}
             `;
