@@ -61,7 +61,6 @@ def get_room_state(room_id: str, player_id: str):
     players_data = []
     
     for p in room["players"]:
-        # Only show character if game over, or if it's someone else's character
         show_char = (
             p["id"] != player_id or 
             p["isWinner"] or 
@@ -113,12 +112,10 @@ def advance_turn(room_id: str):
     for i in range(1, len(room["players"]) + 1):
         idx = (start_index + i) % len(room["players"])
         p = room["players"][idx]
-        # Only pass turn to online, active players
         if not p["isWinner"] and not p["isLoser"]:
             room["turnIndex"] = idx
             break
             
-    # Restart timer for the new player's turn
     start_timer(room_id)
 
 def start_timer(room_id: str):
@@ -137,7 +134,6 @@ def start_timer(room_id: str):
                 await asyncio.sleep(1)
                 room["timerRemaining"] -= 1
                 await manager.broadcast(room_id)
-            # Timer expired - skip turn!
             advance_turn(room_id)
             await manager.broadcast(room_id)
         except asyncio.CancelledError:
@@ -154,7 +150,6 @@ def stop_timer(room_id: str):
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    # We will accept connection, then wait for handshake "join" packet containing client persistent session ID
     await websocket.accept()
     player_id = None
     current_room = None
@@ -166,17 +161,19 @@ async def websocket_endpoint(websocket: WebSocket):
             
             if action == "join":
                 player_id = data.get("playerId")
-                room_id = data.get("roomId", "default").upper()
+                # Clean space variations and ensure strict casing consistency
+                room_id = data.get("roomId", "").strip().upper()
                 name = data.get("name", "Unknown")
                 category = data.get("category", "Anime Characters")
                 timer_limit = data.get("timerLimit", "none")
                 
-                if not player_id:
+                if not player_id or not room_id:
                     continue
                 
-                # Register socket
+                # Register active socket immediately 
                 manager.active_sockets[player_id] = websocket
                 
+                # Create the room if it doesn't exist
                 if room_id not in rooms:
                     create_room(room_id)
                     rooms[room_id]["hostId"] = player_id
@@ -186,14 +183,11 @@ async def websocket_endpoint(websocket: WebSocket):
                 room = rooms[room_id]
                 current_room = room_id
                 
-                # Check if player already exists in the room (Reconnect logic)
                 existing_player = next((p for p in room["players"] if p["id"] == player_id), None)
                 
                 if existing_player:
-                    # Welcome back online
-                    existing_player["name"] = name  # Update name in case they changed it
+                    existing_player["name"] = name  
                 else:
-                    # Lobby full or closed checks
                     if room["phase"] != "lobby":
                         await websocket.send_json({"type": "error", "message": "Game already in progress!"})
                         manager.disconnect(player_id)
@@ -223,17 +217,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     room = rooms[current_room]
                     
                     if room["category"] == "Custom Words":
-                        # Set up writing targets (assign each player the next player in the list)
                         num_players = len(room["players"])
                         for i, p in enumerate(room["players"]):
                             target_index = (i + 1) % num_players
                             p["customTargetId"] = room["players"][target_index]["id"]
                             p["customWordSubmitted"] = False
                             p["character"] = ""
-                        
                         room["phase"] = "writing"
                     else:
-                        # Standard Category Assignment
                         cat = room["category"]
                         if cat not in CATEGORIES:
                             cat = list(CATEGORIES.keys())[0]
@@ -258,7 +249,6 @@ async def websocket_endpoint(websocket: WebSocket):
                     room = rooms[current_room]
                     custom_word = data.get("word", "").strip()
                     
-                    # Find who this player is assigning to
                     me = next((p for p in room["players"] if p["id"] == player_id), None)
                     if me and not me["customWordSubmitted"] and custom_word:
                         target_player = next((p for p in room["players"] if p["id"] == me["customTargetId"]), None)
@@ -266,7 +256,6 @@ async def websocket_endpoint(websocket: WebSocket):
                             target_player["character"] = custom_word
                             me["customWordSubmitted"] = True
                             
-                    # Check if all players have submitted
                     all_submitted = all(p.get("customWordSubmitted", False) for p in room["players"])
                     if all_submitted:
                         for p in room["players"]:
@@ -309,7 +298,6 @@ async def websocket_endpoint(websocket: WebSocket):
                         await manager.broadcast(current_room)
 
             elif action == "back_to_lobby":
-                # Pull all players immediately back to lobby (Force-end current match)
                 if current_room and rooms[current_room]["hostId"] == player_id:
                     room = rooms[current_room]
                     stop_timer(current_room)
@@ -324,7 +312,6 @@ async def websocket_endpoint(websocket: WebSocket):
                     await manager.broadcast(current_room)
 
             elif action == "leave":
-                # Explicit leave room request
                 if current_room and current_room in rooms:
                     room = rooms[current_room]
                     room["players"] = [p for p in room["players"] if p["id"] != player_id]
@@ -344,7 +331,6 @@ async def websocket_endpoint(websocket: WebSocket):
                     break
 
     except WebSocketDisconnect:
-        # Player closed window or disconnected, keep session alive on server!
         manager.disconnect(player_id)
         if current_room and current_room in rooms:
             await manager.broadcast(current_room)
