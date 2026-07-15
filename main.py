@@ -161,24 +161,31 @@ async def websocket_endpoint(websocket: WebSocket):
             
             if action == "join":
                 player_id = data.get("playerId")
-                # Clean space variations and ensure strict casing consistency
                 room_id = data.get("roomId", "").strip().upper()
                 name = data.get("name", "Unknown")
                 category = data.get("category", "Anime Characters")
                 timer_limit = data.get("timerLimit", "none")
+                is_creating = data.get("isCreating", False)
                 
                 if not player_id or not room_id:
                     continue
                 
-                # Register active socket immediately 
                 manager.active_sockets[player_id] = websocket
                 
-                # Create the room if it doesn't exist
+                # Strict check preventing cross-contamination of missing rooms
                 if room_id not in rooms:
-                    create_room(room_id)
-                    rooms[room_id]["hostId"] = player_id
-                    rooms[room_id]["category"] = category
-                    rooms[room_id]["timerLimit"] = timer_limit
+                    if is_creating:
+                        create_room(room_id)
+                        rooms[room_id]["hostId"] = player_id
+                        rooms[room_id]["category"] = category
+                        rooms[room_id]["timerLimit"] = timer_limit
+                    else:
+                        await websocket.send_json({
+                            "type": "error", 
+                            "message": f"Room '{room_id}' does not exist! Please check the spelling or create it."
+                        })
+                        manager.disconnect(player_id)
+                        continue
                 
                 room = rooms[room_id]
                 current_room = room_id
