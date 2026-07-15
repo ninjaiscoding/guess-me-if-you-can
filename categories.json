@@ -1,27 +1,49 @@
 {
-  "Anime Characters": [
-    "Naruto Uzumaki", "Goku", "Monkey D. Luffy", "Eren Yeager", "Levi Ackerman",
-    "Saitama", "Light Yagami", "L Lawliet", "Edward Elric", "Spike Spiegel",
-    "Ichigo Kurosaki", "Sasuke Uchiha", "Vegeta", "Zoro Roronoa", "Mikasa Ackerman",
-    "Gojo Satoru", "Tanjiro Kamado", "Midoriya Izuku", "Killua Zoldyck", "Lelouch vi Britannia"
+"Anime Characters": [
+    "Goku", "Naruto", "Luffy", "Satoru Gojo", "Levi",
+    "Saitama", "Light", "L", "Eren", "Mikasa",
+    "Sasuke Uchiha", "Kakashi", "Itachi","Vegeta",
+    "Zoro Roronoa", "Sanji", "Tanjiro Kamado", "Nezuko",
+    "Killua", "Gon", "Izuku", "Bakugo","Shoto",
+    "All Might", "Ash Ketchum", "Pikachu", "Zoro", "Ichigo", 
+    "Okabe", "Anya Forger", "Denji", "Makima", "Yuji itadori", 
+    "maki", "megumi", "Muzan", "Mahoraga", "sukuna"  
   ],
   "Animals": [
     "Lion", "Elephant", "Tiger", "Giraffe", "Blue Whale",
-    "Dolphin", "Penguin", "Kangaroo", "Koala", "Cheetah",
+    "Dolphin", "Penguin", "Kangaroo", "Cheetah",
     "Panda", "Polar Bear", "Gorilla", "Hippopotamus", "Rhinoceros",
-    "Wolf", "Fox", "Eagle", "Octopus", "Shark"
+    "Wolf", "Fox", "Eagle", "Octopus", "Shark",
+    "Zebra", "Chimpanzee", "Sloth", "Camel", "Bear",
+    "Owl", "Flamingo", "Peacock", "Ostrich", "Parrot",
+    "Goldfish", "Sea Turtle", "Frog",
+    "Chameleon", "Crocodile", "Cobra", "Honeybee",
+    "Butterfly", "Ant", "Mosquito", "Dragonfly", "Snail",
+    "Horse", "Cow", "Dog", "Cat", "Sheep"
   ],
   "Real Famous People": [
-    "Albert Einstein", "Marilyn Monroe", "Elvis Presley", "Michael Jackson", "Leonardo DiCaprio",
-    "Angelina Jolie", "Brad Pitt", "Tom Cruise", "Will Smith", "Oprah Winfrey",
-    "Elon Musk", "Mark Zuckerberg", "Bill Gates", "Steve Jobs", "Gordon Ramsay",
-    "Johnny Depp", "Dwayne 'The Rock' Johnson", "Keanu Reeves", "Taylor Swift", "Beyonce"
+    "Albert Einstein", "Michael Jackson", "Muhammad Ali", "Marilyn Monroe", "Elvis Presley",
+    "Cristiano Ronaldo", "Lionel Messi", "Elon Musk", "Barack Obama", "Donald Trump",
+    "Queen Elizabeth II", "Mahatma Gandhi", "Nelson Mandela", "Martin Luther King Jr.", "Abraham Lincoln",
+    "Leonardo da Vinci", "William Shakespeare", "Isaac Newton", "Steve Jobs", "Bill Gates",
+    "Taylor Swift", "Beyonce", "Dwayne 'The Rock' Johnson", "Johnny Depp", "Leonardo DiCaprio",
+    "Tom Cruise", "Will Smith", "Brad Pitt", "Keanu Reeves", "Angelina Jolie",
+    "Oprah Winfrey", "MrBeast (Jimmy Donaldson)", "Justin Bieber", "Eminem", "Rihanna",
+    "Selena Gomez", "Ariana Grande", "Kylie Jenner", "Kim Kardashian", "Drake",
+    "Vincent van Gogh", "Ludwig van Beethoven", "Wolfgang Amadeus Mozart", "Julius Caesar", "Alexander the Great",
+    "Cleopatra", "Marie Curie", "Stephen Hawking", "Charles Darwin", "Mother Teresa"
   ],
-  "Video Game Characters": [
-    "Mario", "Luigi", "Link", "Zelda", "Master Chief",
-    "Kratos", "Lara Croft", "Sonic the Hedgehog", "Solid Snake", "Pikachu",
-    "Geralt of Rivia", "Ezio Auditore", "Arthur Morgan", "Cloud Strife", "Samus Aran",
-    "Donkey Kong", "Kirby", "Mega Man", "Pac-Man", "GLaDOS"
+ "Video Game Characters": [
+    "Mario", "Pikachu", "Sonic the Hedgehog", "Pac-Man", "Lara Croft",
+    "Kratos", "Master Chief", "Link", "Zelda", "Luigi",
+    "Bowser", "Princess Peach", "Yoshi", "Donkey Kong", "Steve",
+    "Ryu (Street Fighter)", "Chun-Li", "Scorpion (Mortal Kombat)", "Sub-Zero", "Crash Bandicoot",
+    "Spyro the Dragon", "Arthur Morgan", "John Marston", "Carl Johnson", "Trevor Philips",
+    "Leon S. Kennedy", "Jill Valentine", "Albert Wesker", "Ezio Auditore", "Geralt of Rivia",
+    "Cloud Strife", "Sephiroth", "Nathan Drake", "Joel Miller", "Ellie",
+    "Sans (Undertale)", "Doom Slayer (Doomguy)", "Samus Aran", "Solid Snake", "Agent 47",
+    "Kirby", "Mega Man", "Wario", "Spider-Man",
+    "Creeper", "Vault Boy", "Rayman"
   ],
   "Sports Persons": [
     "Lionel Messi", "Cristiano Ronaldo", "Michael Jordan", "LeBron James", "Kobe Bryant",
@@ -65,23 +87,37 @@
     "Frank Sinatra", "Bob Dylan", "Bob Marley", "Jimi Hendrix", "Kurt Cobain",
     "Eminem", "Tupac Shakur", "Notorious B.I.G.", "Snoop Dogg", "Jay-Z"
   ],
-  "Disney Princesses": [
-    "Snow White", "Cinderella", "Aurora", "Ariel", "Belle",
-    "Jasmine", "Pocahontas", "Mulan", "Tiana", "Rapunzel",
-    "Merida", "Moana", "Elsa", "Anna", "Alice (in Wonderland)",
-    "Wendy Darling", "Megara", "Esmeralda", "Jane Porter", "Tinkerbell"
-  ],
-  "Villains": [
+"Vehicles": ["Car", "Truck", "Van", "Bus", "Bike", 
+  "Motorcycle", "Scooter", "Train", "Subway", "Airplane",
+  "Helicopter", "Jet", "Rocket", "Spaceship", "Boat",
+  "Ship", "Yacht", "Submarine", "Kayak", "Raft",
+  "Ambulance", "Firetruck", "Policecar", "Taxi", "Tractor",
+  "Crane", "Golfcart", "GoKart", "Skateboard", "HotAirBalloon", 
+  "JetSki", "Tank"
+ ],
+"Villains": [
     "Joker", "Thanos", "Loki", "Magneto", "Lex Luthor",
-    "Voldemort", "Sauron", "Hannibal Lecter", "Freddy Krueger", "Jason Voorhees",
-    "Michael Myers", "Pennywise", "Agent Smith", "Palpatine", "Sarumon",
-    "Bane", "Green Goblin", "Doctor Octopus", "Venom", "Two-Face"
+    "Bane", "Green Goblin", "Doctor Octopus", "Venom", "Two-Face",
+    "Ultron", "Red Skull", "Killmonger", "Hela", "Mysterio",
+    "Kingpin", "Carnage", "Gorr", "Kang", "Bullseye",
+    "Sandman", "Electro", "Lizard", "Abomination", "Ronan",
+    "General Zod", "Darkseid", "Riddler", "Penguin", "Catwoman",
+    "Poison Ivy", "Scarecrow", "Ra's al Ghul", "Deathstroke", "Sinestro",
+    "Black Adam", "Ocean Master", "Brainiac", "Doomsday", "Reverse-Flash",
+    "Harley Quinn", "Sebastian Shaw", "Lady Deathstrike", "Apocalypse",
+    "Sentinel", "Omni-Man", "Homelander", "Doctor Doom"
   ],
-  "Sci-Fi Characters": [
-    "Spock", "Captain Kirk", "Jean-Luc Picard", "Ellen Ripley", "Sarah Connor",
-    "Rick Deckard", "Paul Atreides", "Katniss Everdeen", "RoboCop", "Judge Dredd",
-    "Optimus Prime", "Megatron", "Doctor Who", "Predator", "Alien (Xenomorph)",
-    "Boba Fett", "Mandalorian", "Grogu", "Chewbacca", "Yoda"
+ "Sci-Fi Characters": [
+    "Ben Tennyson", "Rick Sanchez", "Morty Smith", "Buzz Lightyear", "Wall-E",
+    "Starlord", "Rocket Raccoon", "Groot", "Iron Man", "Spider-Man",
+    "Darth Vader", "Luke Skywalker", "Yoda", "Chewbacca", "Mandalorian",
+    "Baby Yoda", "Boba Fett", "R2-D2", "C-3PO", "Kylo Ren",
+    "Marty McFly", "Doc Brown", "Terminator", "RoboCop", "E.T.",
+    "Neo", "Morpheus", "Agent Smith", "Paul Atreides", "Katniss Everdeen",
+    "Optimus Prime", "Megatron", "Bumblebee", "Ben 10", "Kevin Levin",
+    "Gwen Tennyson", "Vilgax", "Generator Rex", "Danny Phantom", "Stitch",
+    "Master Chief", "Cortana", "Marcus Fenix", "Doom Slayer", "Steve",
+    "Creeper", "Jonesy", "Claptrap", "Vector", "Gru"
   ],
   "Fantasy Characters": [
     "Aragorn", "Legolas", "Gimli", "Bilbo Baggins", "Thorin Oakenshield",
@@ -107,11 +143,8 @@
     "Roman Reigns", "Seth Rollins", "CM Punk", "Brock Lesnar", "Rey Mysterio",
     "Eddie Guerrero", "Kurt Angle", "Chris Jericho", "Edge", "Randy Orton"
   ],
-  "Famous Dogs": [
-    "Scooby-Doo", "Snoopy", "Pluto", "Goofy", "Clifford",
-    "Brian Griffin", "Odie", "Lassie", "Toto", "Beethoven",
-    "Bolt", "Marley", "Hachiko", "Air Bud", "Slinky Dog",
-    "Tramp", "Lady", "Pongo", "Perdita", "Balto"
+  
+  "Space": ["Sun", "Moon", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Milky Way", "Andromeda", "Orion Nebula", "Crab Nebula", "Black Hole", "Sagittarius A*", "Solar Eclipse", "Lunar Eclipse", "Supernova", "Meteor Shower", "Aurora Borealis", "Quasar", "Pulsar", "Asteroid Belt"
   ],
   "Board Game/Toy Characters": [
     "Barbie", "Ken", "Mr. Potato Head", "Monopoly Man", "G.I. Joe",
