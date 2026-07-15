@@ -5,27 +5,20 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from typing import Dict, List, Any
 import asyncio
-
 app = FastAPI()
-
 # Load categories
 with open("categories.json", "r") as f:
     CATEGORIES = json.load(f)
-
 # Game state storage
 rooms: Dict[str, Any] = {}
-
 class ConnectionManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
-
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
-
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)
-
     async def broadcast(self, message: dict, room_id: str):
         if room_id in rooms:
             for p in rooms[room_id]["players"]:
@@ -39,9 +32,7 @@ class ConnectionManager:
                         await p["websocket"].send_json(state)
                     except Exception as e:
                         print(f"Error sending to {p['name']}: {e}")
-
 manager = ConnectionManager()
-
 def create_room(room_id: str):
     rooms[room_id] = {
         "id": room_id,
@@ -51,7 +42,6 @@ def create_room(room_id: str):
         "turnIndex": 0,
         "hostId": None
     }
-
 def get_room_state(room_id: str, player_id: str):
     room = rooms[room_id]
     players_data = []
@@ -76,7 +66,6 @@ def get_room_state(room_id: str, player_id: str):
         "hostId": room["hostId"],
         "myId": player_id
     }
-
 def check_game_over(room_id: str):
     room = rooms[room_id]
     active_players = [p for p in room["players"] if not p["isWinner"] and not p["isLoser"]]
@@ -86,7 +75,6 @@ def check_game_over(room_id: str):
         room["phase"] = "game_over"
         return True
     return False
-
 def advance_turn(room_id: str):
     room = rooms[room_id]
     if check_game_over(room_id):
@@ -100,7 +88,6 @@ def advance_turn(room_id: str):
         if not p["isWinner"] and not p["isLoser"]:
             room["turnIndex"] = idx
             break
-
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
@@ -147,7 +134,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 if current_room and rooms[current_room]["hostId"] == player_id:
                     rooms[current_room]["category"] = data.get("category")
                     await manager.broadcast({}, current_room)
-
             elif action == "start_game":
                 if current_room and rooms[current_room]["hostId"] == player_id:
                     room = rooms[current_room]
@@ -199,7 +185,6 @@ async def websocket_endpoint(websocket: WebSocket):
                     if room["players"][room["turnIndex"]]["id"] == player_id:
                         advance_turn(current_room)
                         await manager.broadcast({}, current_room)
-
             elif action == "play_again":
                 if current_room and rooms[current_room]["hostId"] == player_id:
                     rooms[current_room]["phase"] = "lobby"
@@ -209,7 +194,6 @@ async def websocket_endpoint(websocket: WebSocket):
                         p["isWinner"] = False
                         p["isLoser"] = False
                     await manager.broadcast({}, current_room)
-
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         if current_room and current_room in rooms:
@@ -226,8 +210,6 @@ async def websocket_endpoint(websocket: WebSocket):
                         room["turnIndex"] = 0
                     check_game_over(current_room)
                 await manager.broadcast({}, current_room)
-
 app.mount("/", StaticFiles(directory="public", html=True), name="public")
-
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=3000)
