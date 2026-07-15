@@ -131,7 +131,7 @@ joinBtn.addEventListener('click', () => {
 });
 
 // Setup Category Options
-const categories = ["Anime Characters", "Animals", "Real Famous People", "Video Game Characters", "Sports Persons", "Superheroes", "Cartoon Characters", "Movie Characters", "Mythological Creatures", "Historical Figures", "Musicians & Singers", "Vehicles", "Villains", "Sci-Fi Characters", "Fantasy Characters", "Comedians", "Internet Personalities", "Wrestlers", "Famous Dogs", "Board Game/Toy Characters"];
+const categories = ["Anime Characters", "Animals", "Real Famous People", "Video Game Characters", "Sports Persons", "Superheroes", "Cartoon Characters", "Movie Characters", "Mythological Creatures", "Historical Figures", "Musicians & Singers", "Vehicles", "Villains", "Sci-Fi Characters", "Fantasy Characters", "Comedians", "Internet Personalities", "Wrestlers", "Space", "Board Game/Toy Characters"];
 categories.forEach(c => {
     const opt = document.createElement('option');
     opt.value = c;
