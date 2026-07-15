@@ -11,6 +11,7 @@ const playerId = localStorage.getItem('game_player_id');
 // Login Elements
 const playerNameInput = document.getElementById('player-name');
 const joinBtn = document.getElementById('join-btn');
+const createBtn = document.getElementById('create-btn'); 
 const errorMsg = document.getElementById('login-error');
 const categorySelect = document.getElementById('category-select');
 const loginTimerSelect = document.getElementById('timer-select');
@@ -54,7 +55,7 @@ const gameOverMsg = document.getElementById('game-over-msg');
 let ws;
 let myId = playerId;
 let isHost = false;
-let cachedJoinData = null; // Remembers current identity for background auto-reconnections
+let cachedJoinData = null; 
 
 function connectWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -62,7 +63,6 @@ function connectWebSocket() {
     ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
-        // Automatically handshake back into the game room if disconnected unexpectedly
         if (cachedJoinData) {
             ws.send(JSON.stringify({ action: 'join', ...cachedJoinData }));
         }
@@ -81,7 +81,7 @@ function connectWebSocket() {
     };
 
     ws.onclose = () => {
-        setTimeout(connectWebSocket, 1500); // Reconnect loop
+        setTimeout(connectWebSocket, 1500); 
     };
 }
 
@@ -92,9 +92,9 @@ function showScreen(screenId) {
     document.getElementById(screenId).classList.add('active');
 }
 
-joinBtn.addEventListener('click', () => {
+function handleAuthAction(isCreatingRoom) {
     const name = playerNameInput.value.trim();
-    const roomId = document.getElementById('room-id').value.trim().toUpperCase(); // Enforce uniform uppercase syntax
+    const roomId = document.getElementById('room-id').value.trim().toUpperCase();
     const category = categorySelect.value;
     const timerLimit = loginTimerSelect.value;
     
@@ -103,8 +103,10 @@ joinBtn.addEventListener('click', () => {
         return;
     }
     
-    // Save configurations to state cache
-    cachedJoinData = { playerId, roomId, name, category, timerLimit };
+    errorMsg.innerText = "";
+    
+    // Explicitly pass intent flag down to prevent accidental cross room compilation
+    cachedJoinData = { playerId, roomId, name, category, timerLimit, isCreating: isCreatingRoom };
     
     if (!ws || ws.readyState !== WebSocket.OPEN) {
         connectWebSocket();
@@ -114,9 +116,22 @@ joinBtn.addEventListener('click', () => {
     } else {
         ws.send(JSON.stringify({ action: 'join', ...cachedJoinData }));
     }
-});
+}
+
+joinBtn.addEventListener('click', () => handleAuthAction(false));
+if (createBtn) {
+    createBtn.addEventListener('click', () => handleAuthAction(true));
+}
 
 const categories = ["Anime Characters", "Animals", "Real Famous People", "Video Game Characters", "Sports Persons", "Superheroes", "Cartoon Characters", "Movie Characters", "Mythological Creatures", "Historical Figures", "Musicians & Singers", "Disney Princesses", "Villains", "Sci-Fi Characters", "Fantasy Characters", "Comedians", "Internet Personalities", "Wrestlers", "Famous Dogs", "Board Game/Toy Characters", "Custom Words"];
+categories.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.innerText = c;
+    categorySelect.appendChild(opt); // Populates the main selection window on login screen
+});
+
+// Mirror same array to fill out the inner lobby selection window fallback
 categories.forEach(c => {
     const opt = document.createElement('option');
     opt.value = c;
@@ -168,7 +183,7 @@ hostBackToLobbyBtn.addEventListener('click', () => {
 });
 
 const handleLeaveAction = () => {
-    cachedJoinData = null; // Drop room memory context entirely upon intentional exit
+    cachedJoinData = null; 
     if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ action: 'leave' }));
     }
