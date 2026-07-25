@@ -22,22 +22,19 @@
     "Horse", "Cow", "Dog", "Cat", "Sheep"
   ],
   "Real Famous People": [
-    "Albert Einstein", "Michael Jackson", "Muhammad Ali", "Marilyn Monroe", "Elvis Presley",
+    "Albert Einstein", "Michael Jackson", "Muhammad Ali",
     "Cristiano Ronaldo", "Lionel Messi", "Elon Musk", "Barack Obama", "Donald Trump",
-    "Queen Elizabeth II", "Mahatma Gandhi", "Nelson Mandela", "Martin Luther King Jr.", "Abraham Lincoln",
-    "Leonardo da Vinci", "William Shakespeare", "Isaac Newton", "Steve Jobs", "Bill Gates",
-    "Taylor Swift", "Beyonce", "Dwayne 'The Rock' Johnson", "Johnny Depp", "Leonardo DiCaprio",
-    "Tom Cruise", "Will Smith", "Brad Pitt", "Keanu Reeves", "Angelina Jolie",
-    "Oprah Winfrey", "MrBeast (Jimmy Donaldson)", "Justin Bieber", "Eminem", "Rihanna",
-    "Selena Gomez", "Ariana Grande", "Kylie Jenner", "Kim Kardashian", "Drake",
-    "Vincent van Gogh", "Ludwig van Beethoven", "Wolfgang Amadeus Mozart", "Julius Caesar", "Alexander the Great",
-    "Cleopatra", "Marie Curie", "Stephen Hawking", "Charles Darwin", "Mother Teresa"
+    "Queen Elizabeth", "Mahatma Gandhi",
+    "Leonardo da Vinci", "Isaac Newton", "Steve Jobs", "Bill Gates",
+    "Taylor Swift", "Beyonce", "Dwayne Johnson",
+    "MrBeast","Eminem",
+    "Drake",
+    "Stephen Hawking",
   ],
  "Video Game Characters": [
-    "Mario", "Pikachu", "Sonic the Hedgehog", "Pac-Man", "Lara Croft",
-    "Kratos", "Master Chief", "Link", "Zelda", "Luigi",
-    "Bowser", "Princess Peach", "Yoshi", "Donkey Kong", "Steve",
-    "Ryu (Street Fighter)", "Chun-Li", "Scorpion (Mortal Kombat)", "Sub-Zero", "Crash Bandicoot",
+    "Mario", "Pikachu",
+    "Kratos",
+    "Steve",
     "Spyro the Dragon", "Arthur Morgan", "John Marston", "Carl Johnson", "Trevor Philips",
     "Leon S. Kennedy", "Jill Valentine", "Albert Wesker", "Ezio Auditore", "Geralt of Rivia",
     "Cloud Strife", "Sephiroth", "Nathan Drake", "Joel Miller", "Ellie",
@@ -144,12 +141,44 @@
     "Eddie Guerrero", "Kurt Angle", "Chris Jericho", "Edge", "Randy Orton"
   ],
   
-  "Space": ["Sun", "Moon", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Milky Way", "Andromeda", "Orion Nebula", "Crab Nebula", "Black Hole", "Sagittarius A*", "Solar Eclipse", "Lunar Eclipse", "Supernova", "Meteor Shower", "Aurora Borealis", "Quasar", "Pulsar", "Asteroid Belt"
+  "Space": ["Sun", "Moon", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Milky Way", "Andromeda", "Nebula", "Black Hole", "Sagittarius A*", "Solar Eclipse", "Lunar Eclipse", "Supernova", "Meteor Shower", "Asteroid Belt"
   ],
-  "Board Game/Toy Characters": [
-    "Barbie", "Ken", "Mr. Potato Head", "Monopoly Man", "G.I. Joe",
-    "Action Man", "Woody", "Buzz Lightyear", "Optimus Prime", "He-Man",
-    "Skeletor", "Bratz", "Polly Pocket", "Furby", "Rubik's Cube (concept)",
-    "Teddy Ruxpin", "Care Bear", "My Little Pony", "Transformers", "Lego Man"
+ "video Games": [
+    "Minecraft",
+    "Grand Theft Auto V",
+    "Tetris",
+    "Super Mario",
+    "World of Warcraft",
+    "Counter Strike",
+    "League of Legends",
+    "Fortnite",
+    "Red Dead Redemption",
+    "Elden Ring",
+    "Pac Man",
+    "Call of Duty",
+    "Pokemon",
+    "God of War",
+    "The Last of Us",
+    "Cyberpunk",
+    "Overwatch",
+    "Apex Legends",
+    "Valorant",
+    "Dota",
+    "PUBG",
+    "Among Us",
+    "Fall Guys",
+    "Roblox",
+    "Doom",
+    "Half Life",
+    "Halo",
+    "Resident Evil",
+    "Street Fighter",
+    "Mortal Kombat",
+    "Tekken",
+    "Rocket League",
+    "FIFA",
+    "Assassins Creed",
+    "Diablo",
+    "Clash of Clans"
   ]
 }
