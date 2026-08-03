@@ -45,12 +45,12 @@ def create_room(room_id: str):
         "id": room_id,
         "phase": "lobby",
         "category": "Anime Characters",
-        "timerOption": "60",  # "60", "120"
+        "timerOption": "120",  # "120", "240"
         "customWordsEnabled": False,
         "players": [], # {id, name, websocket, character, guessesLeft, isWinner, isLoser, customWordGiven, isDisconnected}
         "turnIndex": 0,
         "hostId": None,
-        "timerRemaining": 60,
+        "timerRemaining": 120,
         "timerTask": None
     }
 
