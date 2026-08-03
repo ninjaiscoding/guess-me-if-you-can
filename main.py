@@ -154,7 +154,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 room_id = data.get("roomId", "default").upper()
                 name = data.get("name", "Unknown").strip()
                 category = data.get("category", "Anime Characters")
-                timer_opt = data.get("timerOption", "60")
+                timer_opt = data.get("timerOption", "120")
                 custom_words = data.get("customWordsEnabled", False)
                 
                 calculated_id = f"{room_id}_{name.lower()}"
